@@ -8,8 +8,10 @@ public class Unit : MonoBehaviour
     [SerializeField] private Base _base;
 
     private bool _isBusy = false;
+    private bool _isPickUp = false;
     private Rigidbody _rigidbody;
     private Transform _target = null;
+    private Resource _picked = null;
 
     private void Awake()
     {
@@ -23,11 +25,12 @@ public class Unit : MonoBehaviour
             return;
         }
 
-        if(transform.childCount == 1)
-        {
-            _target = null;
-            _isBusy = false;
-        }
+        //if(transform.childCount == 1)
+        //{
+        //    _target = null;
+        //    _isBusy = false;
+        //    _isPickUp = false;
+        //}
     }
 
     private void FixedUpdate()
@@ -48,10 +51,13 @@ public class Unit : MonoBehaviour
             return;
         }
 
-        if (other.TryGetComponent(out Resource resource))
+        if (_isPickUp == false && other.TryGetComponent(out Resource resource) && !resource.IsPickedUp)
         {
             other.transform.SetParent(transform);
             other.attachedRigidbody.isKinematic = true;
+            _picked = resource;
+            resource.Pick();
+            _isPickUp = true;
             _target = _base.transform;
         }
     }
@@ -60,8 +66,25 @@ public class Unit : MonoBehaviour
 
     public void ProvideResource(Resource checkedResource)
     {
-        checkedResource.Checked();
+        checkedResource.Select();
         _isBusy = true;
-        _target = checkedResource.transform;
+        _picked = checkedResource;
+        _target = _picked.transform;
+    }
+
+    public float Deliver()
+    {
+        if(_picked == null)
+        { 
+            return 0; 
+        }
+
+        float score = _picked.Score;
+        _picked.PickedUp();
+        _picked = null;
+        _target = null;
+        _isBusy = false;
+        _isPickUp = false;
+        return score;
     }
 }

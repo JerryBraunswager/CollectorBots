@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -19,11 +17,10 @@ public class Base : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.TryGetComponent(out Resource component))
+        if(other.TryGetComponent(out Unit unit))
         {
-            _score += component.Score;
+            _score += unit.Deliver();
             _text.text = _score.ToString();
-            component.PickedUp();
         }
     }
 
@@ -59,13 +56,14 @@ public class Base : MonoBehaviour
         {
             if (collider.TryGetComponent(out Resource component))
             {
-                if (!component.IsChecked)
+                if (!component.IsSelected)
                 {
                     returnedObject = component;
                     break;
                 }
             }
         }
+
         return returnedObject;
     }
 }

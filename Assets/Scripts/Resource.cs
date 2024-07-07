@@ -6,7 +6,8 @@ public class Resource : MonoBehaviour
 {
     [SerializeField]private float _score;
 
-    private bool _isChecked = false;
+    private bool _isSelected = false;
+    private bool _isPickedUp = false;
     private Rigidbody _rigidbody;
 
     private void Awake()
@@ -14,12 +15,8 @@ public class Resource : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
     }
 
-    private void OnDisable()
-    {
-        Picked.Invoke(this);
-    }
-
-    public bool IsChecked => _isChecked;
+    public bool IsSelected => _isSelected;
+    public bool IsPickedUp => _isPickedUp;
     public float Score => _score;
 
     public event Action<Resource> Picked;
@@ -27,12 +24,18 @@ public class Resource : MonoBehaviour
     public void PickedUp()
     {
         Picked.Invoke(this);
-        _isChecked = false;
+        _isSelected = false;
+        _isPickedUp = false;
         _rigidbody.isKinematic = false;
     }
 
-    public void Checked()
+    public void Select()
     {
-        _isChecked = true;
+        _isSelected = true;
+    }
+
+    public void Pick()
+    {
+        _isPickedUp = true;
     }
 }

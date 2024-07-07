@@ -29,9 +29,9 @@ public class ObjectPool<T> : MonoBehaviour where T : MonoBehaviour
 
     public void PutObject(T obj)
     {
-        _pool.Enqueue(obj);
         obj.transform.parent = transform;
         obj.gameObject.SetActive(false);
+        _pool.Enqueue(obj);
     }
 
     public void Reset()
