@@ -4,38 +4,21 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class Resource : MonoBehaviour
 {
-    [SerializeField]private float _score;
+    [SerializeField]private float _worth;
 
-    private bool _isSelected = false;
-    private bool _isPickedUp = false;
     private Rigidbody _rigidbody;
+
+    public event Action<Resource> Received;
+    public float Worth => _worth;
 
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
     }
 
-    public bool IsSelected => _isSelected;
-    public bool IsPickedUp => _isPickedUp;
-    public float Score => _score;
-
-    public event Action<Resource> Picked;
-
-    public void PickedUp()
+    public void Receive()
     {
-        Picked.Invoke(this);
-        _isSelected = false;
-        _isPickedUp = false;
+        Received.Invoke(this);
         _rigidbody.isKinematic = false;
-    }
-
-    public void Select()
-    {
-        _isSelected = true;
-    }
-
-    public void Pick()
-    {
-        _isPickedUp = true;
     }
 }

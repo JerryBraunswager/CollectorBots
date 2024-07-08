@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(ResorcesPool))]
@@ -7,7 +8,6 @@ public class ResourceSpawner : MonoBehaviour
     [SerializeField] private float _timeToSpawn;
     [SerializeField] private Vector2 _rectangle;
 
-    private WaitForSeconds _sleepTime;
     private ResorcesPool _pool;
 
     private void Awake()
@@ -15,27 +15,36 @@ public class ResourceSpawner : MonoBehaviour
         _pool = GetComponent<ResorcesPool>();
     }
 
-    private void Start()
+    private void OnDisable()
     {
-        _sleepTime = new WaitForSeconds(_timeToSpawn);
-        StartCoroutine(SpawnResources());
-    }
-
-    private IEnumerator SpawnResources()
-    {
-        while (enabled)
+        for(int i = 0; i < _pool.PooledObjects.Count(); i++) 
         {
-            yield return _sleepTime;
-            Resource resource = _pool.GetObject();
-            resource.transform.position = new Vector3(Random.Range(-(_rectangle.x), _rectangle.x), 0, Random.Range(-(_rectangle.y), _rectangle.y));
-            resource.transform.gameObject.SetActive(true);
-            resource.Picked += ResourceObserve;
+            _pool.PooledObjects.ElementAt(i).Received -= ReturnResourceInPool;
         }
     }
 
-    private void ResourceObserve(Resource resource)
+    private void Start()
+    {
+        StartCoroutine(SpawnResources(new WaitForSeconds(_timeToSpawn)));
+    }
+
+    private IEnumerator SpawnResources(WaitForSeconds sleepTime)
+    {
+        while (enabled)
+        {
+            yield return sleepTime;
+            Resource resource = _pool.GetObject();
+            float positionX = Random.Range(-(_rectangle.x), _rectangle.x);
+            float positionY = Random.Range(-(_rectangle.y), _rectangle.y);
+            resource.transform.position = new Vector3(positionX, 0, positionY);
+            resource.transform.gameObject.SetActive(true);
+            resource.Received += ReturnResourceInPool;
+        }
+    }
+
+    private void ReturnResourceInPool(Resource resource)
     {
         _pool.PutObject(resource);
-        resource.Picked -= ResourceObserve;
+        resource.Received -= ReturnResourceInPool;
     }
 }

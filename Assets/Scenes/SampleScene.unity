@@ -303,6 +303,7 @@ GameObject:
   - component: {fileID: 345639550}
   - component: {fileID: 345639549}
   - component: {fileID: 345639554}
+  - component: {fileID: 345639555}
   m_Layer: 0
   m_Name: Base
   m_TagString: Untagged
@@ -408,14 +409,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8971c3622c3645241b9cc035d98b0d2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _text: {fileID: 431873753}
-  _layerMask:
-    serializedVersion: 2
-    m_Bits: 64
+  _scoreText: {fileID: 431873753}
   _units:
   - {fileID: 1246995999}
   - {fileID: 1313739848}
   - {fileID: 1167899652}
+--- !u!114 &345639555
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 345639548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7b41f916531acd4191c2f8544df25d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &431873751
 GameObject:
   m_ObjectHideFlags: 0
@@ -427,8 +440,9 @@ GameObject:
   - component: {fileID: 431873752}
   - component: {fileID: 431873754}
   - component: {fileID: 431873753}
+  - component: {fileID: 431873755}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Score
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -550,6 +564,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 431873751}
   m_CullTransparentMesh: 1
+--- !u!114 &431873755
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 431873751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f77a6fa325dbebb4b900305540add2d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _base: {fileID: 345639554}
 --- !u!135 &502200916 stripped
 SphereCollider:
   m_CorrespondingSourceObject: {fileID: 1754438930124367086, guid: 45be8b072e384664a819e81034878f70, type: 3}

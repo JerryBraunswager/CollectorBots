@@ -1,69 +1,65 @@
-using System.Linq;
-using TMPro;
+using System;
 using UnityEngine;
 
+[RequireComponent(typeof(Scaner))]
 public class Base : MonoBehaviour
 {
-    [SerializeField] private TMP_Text _text;
-    [SerializeField] private LayerMask _layerMask;
     [SerializeField] private Unit[] _units;
 
+    private Scaner _scaner;
     private float _score = 0;
+
+    public event Action<float> ScoreChanged;
+
+    private void Awake()
+    {
+        _scaner = GetComponent<Scaner>();
+    }
 
     private void Start()
     {
-        _text.text = _score.ToString();
+        ScoreChanged.Invoke(_score);
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if(other.TryGetComponent(out Unit unit))
         {
-            _score += unit.Deliver();
-            _text.text = _score.ToString();
+            Resource received = unit.Deliver();
+
+            if (received == null)
+            {
+                return;
+            }
+
+            _score += received.Worth;
+            _scaner.RemoveResource(received);
+            ScoreChanged.Invoke(_score);
         }
     }
 
     private void Update()
     {
-        if (Input.GetMouseButtonDown(1))
+        Resource resource = _scaner.Scan();
+
+        if (resource == null)
         {
-            Resource resource = Scan();
+            return;
+        }
 
-            if (resource == null) 
-            { 
-                return; 
-            }
-
-            foreach (Unit unit in _units) 
-            { 
-                if(!unit.IsBusy)
-                {
-                    unit.ProvideResource(resource);
-                    break;
-                }
+        foreach (Unit unit in _units)
+        {
+            if (!unit.IsBusy)
+            {
+                unit.ProvideResource(resource);
+                break;
             }
         }
+        
     }
 
-    private Resource Scan()
+    public bool CheckScanList(Resource resource)
     {
-        Collider[] overlaps = Physics.OverlapBox(Vector3.zero, new Vector3(10, 0, 5), Quaternion.identity, _layerMask.value);
-        overlaps = overlaps.OrderBy((collider) => Vector3.Distance(collider.gameObject.transform.position, transform.position)).ToArray();
-        Resource returnedObject = null;
-
-        foreach (Collider collider in overlaps)
-        {
-            if (collider.TryGetComponent(out Resource component))
-            {
-                if (!component.IsSelected)
-                {
-                    returnedObject = component;
-                    break;
-                }
-            }
-        }
-
-        return returnedObject;
+        return _scaner.IsChecked(resource);
     }
 }

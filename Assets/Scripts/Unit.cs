@@ -8,29 +8,15 @@ public class Unit : MonoBehaviour
     [SerializeField] private Base _base;
 
     private bool _isBusy = false;
-    private bool _isPickUp = false;
     private Rigidbody _rigidbody;
     private Transform _target = null;
     private Resource _picked = null;
 
+    public bool IsBusy => _isBusy;
+
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody>();
-    }
-
-    private void Update()
-    {
-        if(_target != _base.transform)
-        {
-            return;
-        }
-
-        //if(transform.childCount == 1)
-        //{
-        //    _target = null;
-        //    _isBusy = false;
-        //    _isPickUp = false;
-        //}
     }
 
     private void FixedUpdate()
@@ -51,40 +37,34 @@ public class Unit : MonoBehaviour
             return;
         }
 
-        if (_isPickUp == false && other.TryGetComponent(out Resource resource) && !resource.IsPickedUp)
+        if (transform.childCount == 1 && other.TryGetComponent(out Resource resource) && _base.CheckScanList(resource))
         {
             other.transform.SetParent(transform);
             other.attachedRigidbody.isKinematic = true;
             _picked = resource;
-            resource.Pick();
-            _isPickUp = true;
             _target = _base.transform;
         }
     }
 
-    public bool IsBusy => _isBusy;
-
     public void ProvideResource(Resource checkedResource)
     {
-        checkedResource.Select();
         _isBusy = true;
         _picked = checkedResource;
         _target = _picked.transform;
     }
 
-    public float Deliver()
+    public Resource Deliver()
     {
-        if(_picked == null)
-        { 
-            return 0; 
-        }
+        _isBusy = false;
 
-        float score = _picked.Score;
-        _picked.PickedUp();
+        if(_picked == null)
+        {
+            return null;
+        }
+        Resource resource = _picked;
+        _picked.Receive();
         _picked = null;
         _target = null;
-        _isBusy = false;
-        _isPickUp = false;
-        return score;
+        return resource;
     }
 }

@@ -33,9 +33,4 @@ public class ObjectPool<T> : MonoBehaviour where T : MonoBehaviour
         obj.gameObject.SetActive(false);
         _pool.Enqueue(obj);
     }
-
-    public void Reset()
-    {
-        _pool.Clear();
-    }
 }
