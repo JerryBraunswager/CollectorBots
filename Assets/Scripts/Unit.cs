@@ -8,11 +8,13 @@ public class Unit : MonoBehaviour
     [SerializeField] private Base _base;
 
     private bool _isBusy = false;
+    private bool _isBusy1 = false;
     private Rigidbody _rigidbody;
     private Transform _target = null;
     private Resource _picked = null;
 
     public bool IsBusy => _isBusy;
+    public Base Home => _base;
 
     private void Awake()
     {
@@ -21,7 +23,7 @@ public class Unit : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(_isBusy == false) 
+        if(_isBusy == false || _target == null) 
         {
             return;
         }
@@ -32,18 +34,26 @@ public class Unit : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (_isBusy == false)
+        if (_isBusy == false || _isBusy1 == true)
         {
             return;
         }
 
-        if (transform.childCount == 1 && other.TryGetComponent(out Resource resource) && _base.CheckScanList(resource))
+        if (transform.childCount == 1 & other.TryGetComponent(out Resource resource) & _base.CheckScanList(resource))
         {
             other.transform.SetParent(transform);
             other.attachedRigidbody.isKinematic = true;
+            other.isTrigger = false;
             _picked = resource;
+            resource.Pick();
             _target = _base.transform;
         }
+    }
+
+    public void Init(Base home)
+    {
+        _base = home;
+        _isBusy1 = false;
     }
 
     public void ProvideResource(Resource checkedResource)
@@ -53,18 +63,28 @@ public class Unit : MonoBehaviour
         _target = _picked.transform;
     }
 
+    public void ProvideTarget(Transform target) 
+    {
+        _isBusy = true;
+        _isBusy1 = true;
+        _picked = null;
+        _target = target;
+    }
+
     public Resource Deliver()
     {
         _isBusy = false;
+        _target = null;
 
         if(_picked == null)
         {
             return null;
         }
+
         Resource resource = _picked;
         _picked.Receive();
+        _picked.Deliver();
         _picked = null;
-        _target = null;
         return resource;
     }
 }

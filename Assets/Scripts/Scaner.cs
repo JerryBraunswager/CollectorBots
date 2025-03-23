@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 public class Scaner : MonoBehaviour
 {
     [SerializeField] private LayerMask _layerMask;
 
-    private Vector3 _size = new Vector3(18, 0, 7);
+    private Vector3 _size = new Vector3(20, 0, 9);
     private List<Resource> _scannedResources = new List<Resource>();
 
     public Resource Scan()
@@ -38,6 +39,18 @@ public class Scaner : MonoBehaviour
 
     public bool IsChecked(Resource resource)
     {
-        return _scannedResources.Contains(resource);
+        //if(_scannedResources == null)
+        //{
+        //    return false;
+        //}
+
+        bool result = _scannedResources.Contains(resource);
+
+        if (result == true)
+        {
+            result = !resource.isPicked;
+        }
+
+        return result;
     }
 }

@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
@@ -20,7 +22,7 @@ public class ScoreView : MonoBehaviour
 
     private void OnDisable()
     {
-        _base.ScoreChanged -= WriteScore;
+        _base.ScoreChanged -= WriteScore; 
     }
 
     private void WriteScore(float score)
