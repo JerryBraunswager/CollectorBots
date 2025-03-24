@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [RequireComponent (typeof(Rigidbody))]
@@ -7,14 +8,16 @@ public class Unit : MonoBehaviour
     [SerializeField] private Collider _pickCollider;
     [SerializeField] private Base _base;
 
-    private bool _isBusy = false;
-    private bool _isBusy1 = false;
+    private bool _isBusyResource = false;
+    private bool _isBusyTarget = false;
     private Rigidbody _rigidbody;
     private Transform _target = null;
     private Resource _picked = null;
 
-    public bool IsBusy => _isBusy;
+    public bool IsBusy => _isBusyResource;
     public Base Home => _base;
+
+    public event Action<Resource> PickedUp;
 
     private void Awake()
     {
@@ -23,7 +26,7 @@ public class Unit : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(_isBusy == false || _target == null) 
+        if(_isBusyResource == false || _target == null) 
         {
             return;
         }
@@ -34,46 +37,54 @@ public class Unit : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (_isBusy == false || _isBusy1 == true)
+        if (_picked == null || _isBusyResource == false || _isBusyTarget == true)
         {
             return;
         }
-
-        if (transform.childCount == 1 & other.TryGetComponent(out Resource resource) & _base.CheckScanList(resource))
+        
+        if (transform.childCount == 1 & other.TryGetComponent(out Resource resource))
         {
+            if(resource != _picked)
+            {
+                return;
+            }
             other.transform.SetParent(transform);
             other.attachedRigidbody.isKinematic = true;
             other.isTrigger = false;
-            _picked = resource;
-            resource.Pick();
             _target = _base.transform;
+            PickedUp?.Invoke(resource);
         }
     }
 
     public void Init(Base home)
     {
+        if (_base != null)
+        {
+            _base.RemoveUnit(this);
+        }
         _base = home;
-        _isBusy1 = false;
+        _base.AddUnit(this);
+        _isBusyTarget = false;
     }
 
     public void ProvideResource(Resource checkedResource)
     {
-        _isBusy = true;
+        _isBusyResource = true;
         _picked = checkedResource;
         _target = _picked.transform;
     }
 
     public void ProvideTarget(Transform target) 
     {
-        _isBusy = true;
-        _isBusy1 = true;
+        _isBusyResource = true;
+        _isBusyTarget = true;
         _picked = null;
         _target = target;
     }
 
     public Resource Deliver()
     {
-        _isBusy = false;
+        _isBusyResource = false;
         _target = null;
 
         if(_picked == null)
@@ -83,7 +94,6 @@ public class Unit : MonoBehaviour
 
         Resource resource = _picked;
         _picked.Receive();
-        _picked.Deliver();
         _picked = null;
         return resource;
     }

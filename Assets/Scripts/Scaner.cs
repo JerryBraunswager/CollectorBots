@@ -6,51 +6,45 @@ using UnityEngine;
 public class Scaner : MonoBehaviour
 {
     [SerializeField] private LayerMask _layerMask;
+    [SerializeField] private Resorces _pool;
 
     private Vector3 _size = new Vector3(20, 0, 9);
-    private List<Resource> _scannedResources = new List<Resource>();
 
     public Resource Scan()
     {
-        Collider[] overlaps = Physics.OverlapBox(Vector3.zero, _size, Quaternion.identity, _layerMask.value);
-        overlaps = overlaps.OrderBy((collider) => (collider.transform.transform.position - transform.position).sqrMagnitude).ToArray();
-        Resource returnedObject = null;
+        //Collider[] overlaps = Physics.OverlapBox(Vector3.zero, _size, Quaternion.identity, _layerMask.value);
+        //overlaps = overlaps.OrderBy((collider) => (collider.transform.transform.position - transform.position).sqrMagnitude).ToArray();
+        //Resource returnedObject = /*_pool.GetResourceFromPool();*/null;
+        //_pool.ChooseResource(returnedObject);
 
-        foreach (Collider collider in overlaps)
-        {
-            if (collider.TryGetComponent(out Resource resource))
-            {
-                if (_scannedResources.Contains(resource) == false)
-                {
-                    returnedObject = resource;
-                    _scannedResources.Add(resource);
-                    break;
-                }
-            }
-        }
+        //foreach (Collider collider in overlaps)
+        //{
+        //    if (collider.TryGetComponent(out Resource resource))
+        //    {
+        //        if (_pool.GetResourceFromPool)
+        //        {
+        //            returnedObject = resource;
+        //            _pool.ChooseResource(resource);
+        //            break;
+        //        }
+        //    }
+        //}
 
-        return returnedObject;
+        return _pool.ChooseResource();//returnedObject;
+    }
+
+    public void Init(Resorces resources)
+    {
+        _pool = resources;
     }
 
     public void RemoveResource(Resource resource)
     {
-        _scannedResources.Remove(resource);
+        _pool.DeleteResource(resource);
     }
 
-    public bool IsChecked(Resource resource)
+    public void PickResource(Resource resource)
     {
-        //if(_scannedResources == null)
-        //{
-        //    return false;
-        //}
-
-        bool result = _scannedResources.Contains(resource);
-
-        if (result == true)
-        {
-            result = !resource.isPicked;
-        }
-
-        return result;
+        _pool.PickResource(resource);
     }
 }

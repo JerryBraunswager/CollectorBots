@@ -9,9 +9,6 @@ public class Resource : MonoBehaviour
 
     private Rigidbody _rigidbody;
     private Collider _collider;
-    private bool _isPicked = false;
-
-    public bool isPicked => _isPicked;
 
     public event Action<Resource> Received;
     public float Worth => _worth;
@@ -27,15 +24,5 @@ public class Resource : MonoBehaviour
         Received?.Invoke(this);
         _rigidbody.isKinematic = false;
         _collider.isTrigger = true;
-    }
-
-    public void Pick()
-    {
-        _isPicked = true;
-    }
-
-    public void Deliver()
-    {
-        _isPicked = false;
     }
 }

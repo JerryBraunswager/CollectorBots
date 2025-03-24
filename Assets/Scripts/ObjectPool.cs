@@ -5,32 +5,52 @@ public class ObjectPool<T> : MonoBehaviour where T : MonoBehaviour
 {
     [SerializeField] private T _prefab;
 
-    private Queue<T> _pool;
+    private List<T> _pool = new List<T>();
 
     public IEnumerable<T> PooledObjects => _pool;
 
     private void Awake()
     {
-        _pool = new Queue<T>();
+        _pool = new List<T>();
     }
 
     public T GetObject()
     {
-        if (_pool.Count == 0)
-        {
-            var obj = Instantiate(_prefab);
-            obj.transform.parent = transform;
-
-            return obj;
+        foreach (T obj in _pool) 
+        { 
+            if(obj.gameObject.activeSelf == false)
+            {
+                //_pool.Remove(obj);
+                return obj;
+            }
         }
 
-        return _pool.Dequeue();
+        var newObj = Instantiate(_prefab);
+        newObj.transform.parent = transform;
+        _pool.Add(newObj);
+        return newObj;
+    }
+
+    public T PeakObject()
+    {
+        foreach (T obj in _pool)
+        {
+            if (obj.gameObject.activeSelf == true)
+            {
+                return obj;
+            }
+        }
+
+        return null;
+    }
+
+    public void RemoveObject(T obj)
+    {
+        _pool.Remove(obj);
     }
 
     public void PutObject(T obj)
     {
-        obj.transform.parent = transform;
-        obj.gameObject.SetActive(false);
-        _pool.Enqueue(obj);
+        _pool.Add(obj);
     }
 }

@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 5345362014801307620}
   - component: {fileID: 748667893039252768}
   - component: {fileID: 6132723878114157727}
+  - component: {fileID: 9161220857357092035}
   m_Layer: 0
   m_Name: Base
   m_TagString: Untagged
@@ -62,7 +63,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.5, z: 0}
-  m_LocalScale: {x: 0.33333334, y: 0.9044, z: 0.5}
+  m_LocalScale: {x: 1, y: 0.9044, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8458641706243077173}
@@ -156,10 +157,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _unitPriece: 3
   _basePrice: 5
-  _leftDownPointSpawn: {fileID: 2281450711380362505}
-  _rightUpPointSpawn: {fileID: 8458641706243077173}
-  _unit: {fileID: 1307522933673701171, guid: 45be8b072e384664a819e81034878f70, type: 3}
   _startCount: 0
+  _flag: {fileID: 0}
+  _resourceSpawner: {fileID: 6754868241057063349}
 --- !u!114 &6132723878114157727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -175,6 +175,22 @@ MonoBehaviour:
   _layerMask:
     serializedVersion: 2
     m_Bits: 64
+  _pool: {fileID: 0}
+--- !u!114 &9161220857357092035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2078899727053672917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55dfa7fd527046f4a8d9f2448f7e5571, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _leftDownPointSpawn: {fileID: 2281450711380362505}
+  _rightUpPointSpawn: {fileID: 8458641706243077173}
+  _unit: {fileID: 1307522933673701171, guid: 45be8b072e384664a819e81034878f70, type: 3}
 --- !u!1 &3026090477204217093
 GameObject:
   m_ObjectHideFlags: 0
@@ -318,7 +334,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7711286342256366646}
   - component: {fileID: 6754868241057063349}
-  - component: {fileID: 2900801194715526347}
   m_Layer: 0
   m_Name: ResourceSpawn
   m_TagString: Untagged
@@ -355,19 +370,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _timeToSpawn: 2
   _rectangle: {x: 5, y: 2}
---- !u!114 &2900801194715526347
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6872116135643588525}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 111c6ad151fe1ac458e4ed0fb55a2111, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _prefab: {fileID: 1457302595373813932, guid: bf2c096c7775a2146a5aefcb91707986, type: 3}
+  _pool: {fileID: 0}
 --- !u!1 &7336371724554117730
 GameObject:
   m_ObjectHideFlags: 0

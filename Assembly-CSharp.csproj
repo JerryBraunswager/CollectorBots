@@ -61,14 +61,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Flag.cs" />
-    <Compile Include="Assets\Scripts\ResorcesPool.cs" />
+    <Compile Include="Assets\Scripts\FlagPlacer.cs" />
+    <Compile Include="Assets\Scripts\Resorces.cs" />
+    <Compile Include="Assets\Scripts\Bases.cs" />
     <Compile Include="Assets\Scripts\Ground.cs" />
     <Compile Include="Assets\Scripts\ObjectPool.cs" />
+    <Compile Include="Assets\Scripts\UnitSpawner.cs" />
     <Compile Include="Assets\Scripts\Scaner.cs" />
     <Compile Include="Assets\Scripts\Resource.cs" />
     <Compile Include="Assets\Scripts\Base.cs" />
     <Compile Include="Assets\Scripts\ScoreView.cs" />
     <Compile Include="Assets\Scripts\Unit.cs" />
+    <Compile Include="Assets\Scripts\ResourcesPool.cs" />
     <Compile Include="Assets\Scripts\ResourceSpawner.cs" />
   </ItemGroup>
   <ItemGroup>

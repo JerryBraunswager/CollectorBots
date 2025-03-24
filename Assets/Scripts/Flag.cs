@@ -1,42 +1,35 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
+[RequireComponent(typeof(Collider))]
 public class Flag : MonoBehaviour
 {
-    [SerializeField] private Base _base;
+    [SerializeField] private GameObject[] _flagProp;
 
-    private Unit _deliver;
-    private bool _isAssigned = false;
-    private Base _home;
-    private Ground _ground;
+    private Collider _collider;
+
+    public event Action<Unit> SteppedUp;
+
+    private void Awake()
+    {
+        _collider = GetComponent<Collider>();
+        _collider.enabled = false;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
         if(other.TryGetComponent(out Unit unit))
         {
-            if(unit == _deliver)
-            {
-                Base spawned = Instantiate(_base, _ground.transform);
-                spawned.transform.position = transform.position;
-                _ground.AddBase(spawned);
-                unit.Init(spawned);
-                unit.Deliver();
-                //_home.InitFlag(null);
-                Destroy(gameObject);
-            }
+            SteppedUp?.Invoke(unit);
         }
     }
 
-    public void Init(Unit deliver, Base home, Ground ground)
+    public void ChangeState(bool state)
     {
-        if (_isAssigned == false)
-        {
-            _home = home;
-            _ground = ground;
-            _deliver = deliver;
-            _deliver.ProvideTarget(transform);
-            _isAssigned = true;
+        foreach(var prop in _flagProp) 
+        { 
+            prop.SetActive(state);
+            _collider.enabled = state;
         }
     }
 }
