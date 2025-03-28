@@ -6,7 +6,7 @@ public class Unit : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private Collider _pickCollider;
-    [SerializeField] private Base _base;
+    [SerializeField] private Transform _base;
 
     private bool _isBusyResource = false;
     private bool _isBusyTarget = false;
@@ -15,9 +15,10 @@ public class Unit : MonoBehaviour
     private Resource _picked = null;
 
     public bool IsBusy => _isBusyResource;
-    public Base Home => _base;
+    public Transform Home => _base;
 
     public event Action<Resource> PickedUp;
+    public event Action<Unit> ReachedFlag;
 
     private void Awake()
     {
@@ -37,11 +38,6 @@ public class Unit : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (_picked == null || _isBusyResource == false || _isBusyTarget == true)
-        {
-            return;
-        }
-        
         if (transform.childCount == 1 & other.TryGetComponent(out Resource resource))
         {
             if(resource != _picked)
@@ -51,19 +47,19 @@ public class Unit : MonoBehaviour
             other.transform.SetParent(transform);
             other.attachedRigidbody.isKinematic = true;
             other.isTrigger = false;
-            _target = _base.transform;
+            _target = _base;
             PickedUp?.Invoke(resource);
+        }
+
+        if(other.TryGetComponent(out Flag flag))
+        {
+            ReachedFlag?.Invoke(this);
         }
     }
 
-    public void Init(Base home)
+    public void Init(Transform home)
     {
-        if (_base != null)
-        {
-            _base.RemoveUnit(this);
-        }
         _base = home;
-        _base.AddUnit(this);
         _isBusyTarget = false;
     }
 

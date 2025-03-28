@@ -7,13 +7,13 @@ public class ResourceSpawner : MonoBehaviour
     [SerializeField] private float _timeToSpawn;
     [SerializeField] private Vector2 _rectangle;
 
-    [SerializeField] private Resorces _pool;
+    [SerializeField] private ResourceFactory _pool;
 
     private void OnDisable()
     {
-        for(int i = 0; i < _pool.AllResources.Count(); i++) 
+        for(int i = 0; i < _pool.FreeResources.Count(); i++) 
         {
-            _pool.AllResources.ElementAt(i).Received -= ReturnResourceInPool;
+            _pool.FreeResources.ElementAt(i).Received -= ReturnResourceInPool;
         }
     }
 
@@ -22,7 +22,7 @@ public class ResourceSpawner : MonoBehaviour
         StartCoroutine(SpawnResources(new WaitForSeconds(_timeToSpawn)));
     }
 
-    public void SetPool(Resorces pool)
+    public void SetPool(ResourceFactory pool)
     {
         _pool = pool;
     }

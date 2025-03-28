@@ -1,21 +1,22 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Scaner))]
-[RequireComponent (typeof(UnitSpawner))]
 public class Base : MonoBehaviour
 {
+    [SerializeField] private Transform _leftDownPointSpawn;
+    [SerializeField] private Transform _rightUpPointSpawn;
     [SerializeField] private float _unitPriece;
     [SerializeField] private float _basePrice;
     [SerializeField] private int _startCount;
     [SerializeField] private FlagPlacer _flag;
     [SerializeField] private ResourceSpawner _resourceSpawner;
+    [SerializeField] private UnitSpawner _unitSpawner;
 
     private Scaner _scaner;
-    private UnitSpawner _unitSpawner;
     private Resource _scannedResource;
     private float _score = 0;
+    private Unit _freeUnit;
 
     public int UnitCount => _unitSpawner.UnitCount;
 
@@ -25,7 +26,6 @@ public class Base : MonoBehaviour
     private void Awake()
     {
         _scaner = GetComponent<Scaner>();
-        _unitSpawner = GetComponent<UnitSpawner>();
     }
 
     private void Start()
@@ -34,7 +34,8 @@ public class Base : MonoBehaviour
 
         for (int i = 0; i < _startCount; i++) 
         {
-            _unitSpawner.SpawnUnit();
+            Unit spawned = _unitSpawner.SpawnUnit(this, _leftDownPointSpawn, _rightUpPointSpawn);
+            spawned.PickedUp += InsertPickPool;
         }
     }
 
@@ -42,7 +43,7 @@ public class Base : MonoBehaviour
     {
         if(other.TryGetComponent(out Unit unit))
         {
-            if (unit.Home == this)
+            if (unit.Home == transform)
             {
                 Resource received = unit.Deliver();
 
@@ -65,13 +66,15 @@ public class Base : MonoBehaviour
             return;
         }
 
+        _freeUnit = _unitSpawner.FreeUnit(transform);
+
         ProvideResource();
 
-        if (CheckFlag())
+        if (IsBaseChoosed())
         {
             if (_score >= _basePrice)
             {
-                _flag.Init(_unitSpawner.FreeUnit());
+                _flag.Init(_freeUnit);
                 _score -= _basePrice;
                 ScoreChanged?.Invoke(_score);
             }
@@ -82,7 +85,8 @@ public class Base : MonoBehaviour
             {
                 _score -= _unitPriece;
                 ScoreChanged?.Invoke(_score);
-                _unitSpawner.SpawnUnit();
+                Unit spawned = _unitSpawner.SpawnUnit(this, _leftDownPointSpawn, _rightUpPointSpawn);
+                spawned.PickedUp += InsertPickPool;
             }
         }
     }
@@ -97,7 +101,7 @@ public class Base : MonoBehaviour
         BaseChoosed?.Invoke(this);
     }
 
-    public bool CheckFlag()
+    private bool IsBaseChoosed()
     {
         if (_flag == null)
         {
@@ -107,9 +111,10 @@ public class Base : MonoBehaviour
         return _flag.ChoosedBase == this;
     }
 
-    public void Init(FlagPlacer flagPlacer, Resorces resorces)
+    public void Init(FlagPlacer flagPlacer, ResourceFactory resorces, UnitSpawner unitSpawner)
     {
         _flag = flagPlacer;
+        _unitSpawner = unitSpawner;
         _scaner.Init(resorces);
         _resourceSpawner.SetPool(resorces);
     }
@@ -119,16 +124,6 @@ public class Base : MonoBehaviour
         _scaner.PickResource(resource);
     }
 
-    public void AddUnit(Unit unit) 
-    {
-        _unitSpawner.AddUnit(unit);
-    }
-
-    public void RemoveUnit(Unit unit) 
-    { 
-        _unitSpawner.RemoveUnit(unit);
-    }
-
     private void ProvideResource()
     {
         if (_scannedResource == null)
@@ -136,7 +131,7 @@ public class Base : MonoBehaviour
             _scannedResource = _scaner.Scan();
         }
 
-        Unit unit = _unitSpawner.FreeUnit();
+        Unit unit = _freeUnit;
 
         if (unit == null || _scannedResource == null)
         {
