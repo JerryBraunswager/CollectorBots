@@ -13,7 +13,7 @@ public class ObjectPool<T> where T : MonoBehaviour
     {
         foreach (T obj in _pool) 
         { 
-            if(obj.gameObject.activeSelf)
+            if(obj.gameObject.activeSelf == false)
             {
                 return obj;
             }

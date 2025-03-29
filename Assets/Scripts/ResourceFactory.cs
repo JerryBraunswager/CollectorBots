@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ResourceFactory : MonoBehaviour
 {
+    [SerializeField] private Scaner _scaner;
     [SerializeField] private Resource resource;
 
     private ObjectPool<Resource> _freeResources = new ObjectPool<Resource>();
@@ -12,18 +13,24 @@ public class ResourceFactory : MonoBehaviour
 
     public ReadOnlyCollection<Resource> FreeResources => _freeResources.PooledObjects.ToList().AsReadOnly();
 
-    public bool ChooseResource(Resource resource)
+    private void OnEnable()
     {
-        bool result = false;
+        _scaner.Choosed += ChooseResource;
+        _scaner.Picked += PickResource;
+        _scaner.Deleted += DeleteResource;
+    }
 
-        if(_freeResources.PooledObjects.Contains(resource))
-        {
-            result = true;
-            _freeResources.RemoveObject(resource);
-            _choosedResources.PutObject(resource);
-        }
+    private void OnDisable()
+    {
+        _scaner.Choosed -= ChooseResource;
+        _scaner.Picked -= PickResource;
+        _scaner.Deleted -= DeleteResource;
+    }
 
-        return result;
+    public void ChooseResource(Resource resource)
+    {
+        _freeResources.RemoveObject(resource);
+        _choosedResources.PutObject(resource);
     }
 
     public void PickResource(Resource resource)

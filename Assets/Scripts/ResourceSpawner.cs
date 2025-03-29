@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Linq;
 using UnityEngine;
 
 public class ResourceSpawner : MonoBehaviour
@@ -11,9 +10,9 @@ public class ResourceSpawner : MonoBehaviour
 
     private void OnDisable()
     {
-        for(int i = 0; i < _pool.FreeResources.Count(); i++) 
+        foreach(Resource resource in _pool.FreeResources) 
         {
-            _pool.FreeResources.ElementAt(i).Received -= ReturnResourceInPool;
+            resource.Received -= ReturnResourceInPool;
         }
     }
 

@@ -45,6 +45,14 @@ public class UnitSpawner : MonoBehaviour
         return null;
     }
 
+    public IEnumerable<Unit> GetUnits()
+    {
+        foreach (Unit unit in _units) 
+        {
+            yield return unit;
+        }       
+    }
+
     private void TrySpawnBase(Unit unit)
     {
         SteppedUp?.Invoke(unit);

@@ -253,6 +253,7 @@ GameObject:
   m_Component:
   - component: {fileID: 370793685}
   - component: {fileID: 370793684}
+  - component: {fileID: 370793686}
   m_Layer: 0
   m_Name: ResourcePool
   m_TagString: Untagged
@@ -272,6 +273,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 111c6ad151fe1ac458e4ed0fb55a2111, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _scaner: {fileID: 370793686}
   resource: {fileID: 1457302595373813932, guid: bf2c096c7775a2146a5aefcb91707986, type: 3}
 --- !u!4 &370793685
 Transform:
@@ -288,6 +290,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &370793686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 370793683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7b41f916531acd4191c2f8544df25d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _sleepTime: 0
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -705,6 +723,7 @@ MonoBehaviour:
   _resorces: {fileID: 370793684}
   _base: {fileID: 748667893039252768, guid: a8d0705dafc476d46b97e3e040674ebd, type: 3}
   _spawner: {fileID: 131398914}
+  _scaner: {fileID: 370793686}
   _allBases:
   - {fileID: 2060002473}
 --- !u!4 &1458056437
@@ -751,6 +770,10 @@ PrefabInstance:
       propertyPath: _flag
       value: 
       objectReference: {fileID: 1236956203}
+    - target: {fileID: 748667893039252768, guid: a8d0705dafc476d46b97e3e040674ebd, type: 3}
+      propertyPath: _scaner
+      value: 
+      objectReference: {fileID: 370793686}
     - target: {fileID: 748667893039252768, guid: a8d0705dafc476d46b97e3e040674ebd, type: 3}
       propertyPath: _startCount
       value: 3

@@ -8,6 +8,7 @@ public class BaseFactory : MonoBehaviour
     [SerializeField] private ResourceFactory _resorces;
     [SerializeField] private Base _base;
     [SerializeField] private UnitSpawner _spawner;
+    [SerializeField] private Scaner _scaner;
     [SerializeField] private List<Base> _allBases = new List<Base>();
 
     public ReadOnlyCollection<Base> AllBases => _allBases.AsReadOnly();
@@ -29,7 +30,7 @@ public class BaseFactory : MonoBehaviour
     public Base AddBase()
     {
         Base spawned = Instantiate(_base, transform);
-        spawned.Init(_flagPlacer, _resorces, _spawner);
+        spawned.Init(_flagPlacer, _resorces, _spawner, _scaner);
         spawned.transform.position = transform.position;
         _allBases.Add(spawned);
         return spawned;
